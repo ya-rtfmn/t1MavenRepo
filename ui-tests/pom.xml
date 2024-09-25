@@ -11,8 +11,14 @@
     </parent>
 
     <artifactId>ui-tests</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.15.1</version>
+        </dependency>
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>api-tests</artifactId>

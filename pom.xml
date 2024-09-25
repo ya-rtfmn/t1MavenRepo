@@ -14,11 +14,14 @@
     </modules>
 
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.jupiter.version>5.11.0</junit.jupiter.version>
+        <junit.jupiter.version>5.11.1</junit.jupiter.version>
         <allure.maven.version>2.14.0</allure.maven.version>
         <allure.junit5.version>2.29.0</allure.junit5.version>
         <allure.selenide.version>2.29.0</allure.selenide.version>
@@ -26,10 +29,12 @@
         <allure.report.version>2.30.0</allure.report.version>
         <restassured.version>5.5.0</restassured.version>
         <selenium.version>1.20.1</selenium.version>
-        <selenide.version>7.4.3</selenide.version>
+        <selenide.version>7.5.1</selenide.version>
         <jackson.databind.version>2.18.0-rc1</jackson.databind.version>
         <maven.surefire.plugin.version>3.5.0</maven.surefire.plugin.version>
-        <aspectjweaver.version>1.9.21</aspectjweaver.version>
+        <aspectjweaver.version>1.9.22.1</aspectjweaver.version>
+        <slf4j.simple.version>2.1.0-alpha1</slf4j.simple.version>
+        <dotenv.java.version>3.0.2</dotenv.java.version>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +49,16 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>${dotenv.java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.simple.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
@@ -64,12 +79,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <property>
                             <name>allure.results.directory</name>
                             <value>${project.basedir}/../target/allure-results</value>
                         </property>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
                 <dependencies>
                     <dependency>
