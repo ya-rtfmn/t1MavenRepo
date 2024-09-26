@@ -1,30 +1,25 @@
 package tests;
 
 import config.BaseTest;
-import data.InvalidLoginDataProvider;
-import data.ValidLoginDataProvider;
-import data.WrongPasswordLoginDataProvider;
+import config.EnvConfig;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import utils.RequestHelper;
+import schema.LoginRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LoginTests extends BaseTest {
 
-    private RequestHelper requestHelper;
-
-    @BeforeEach
-    public void setUp() {
-        requestHelper = new RequestHelper();
-    }
+    private static final String VALID_USERNAME = EnvConfig.getValidUsername();
+    private static final String VALID_PASSWORD = EnvConfig.getValidPassword();
+    private static final String INVALID_USERNAME = EnvConfig.getInvalidUsername();
+    private static final String INVALID_PASSWORD = EnvConfig.getInvalidPassword();
 
     @Test
     public void testValidLogin() {
-        ValidLoginDataProvider validLoginData = new ValidLoginDataProvider();
-        Response response = requestHelper.postLoginRequest(validLoginData);
+        LoginRequest loginRequest = new LoginRequest(VALID_USERNAME, VALID_PASSWORD);
+        Response response = login(loginRequest);
         String token = response.jsonPath().getString("access_token");
 
         assertEquals(200, response.getStatusCode());
@@ -33,16 +28,16 @@ public class LoginTests extends BaseTest {
 
     @Test
     public void testInvalidLogin() {
-        InvalidLoginDataProvider invalidLoginData = new InvalidLoginDataProvider();
-        Response response = requestHelper.postLoginRequest(invalidLoginData);
+        LoginRequest loginRequest = new LoginRequest(INVALID_USERNAME, INVALID_PASSWORD);
+        Response response = login(loginRequest);
 
         assertEquals(401, response.getStatusCode());
     }
 
     @Test
     public void testLoginWithWrongPassword() {
-        WrongPasswordLoginDataProvider wrongPasswordData = new WrongPasswordLoginDataProvider();
-        Response response = requestHelper.postLoginRequest(wrongPasswordData);
+        LoginRequest loginRequest = new LoginRequest(VALID_USERNAME, INVALID_PASSWORD);
+        Response response = login(loginRequest);
 
         assertEquals(401, response.getStatusCode());
     }

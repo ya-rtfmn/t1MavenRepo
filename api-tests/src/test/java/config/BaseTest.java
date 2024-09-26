@@ -1,13 +1,17 @@
 package config;
 
 import data.CartOperations;
+import data.LoginOperations;
 import data.ProductOperations;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
+import schema.CartRequest;
+import schema.LoginRequest;
+import utils.RequestHelper;
 
-public class BaseTest implements ProductOperations, CartOperations {
+public class BaseTest implements LoginOperations, ProductOperations, CartOperations {
 
     @BeforeAll
     public static void setup() {
@@ -21,6 +25,13 @@ public class BaseTest implements ProductOperations, CartOperations {
     }
 
     @Override
+    public Response login(LoginRequest loginRequest) {
+        RequestHelper requestHelper = new RequestHelper();
+
+        return requestHelper.postLoginRequest(loginRequest);
+    }
+
+    @Override
     public Response getProducts() {
         return getRequestSpec().get("/products");
     }
@@ -31,25 +42,17 @@ public class BaseTest implements ProductOperations, CartOperations {
     }
 
     @Override
-    public Response getNonExistingProduct(int productId) {
-        return getRequestSpec().get("/products/" + productId);
+    public Response getClientCart(String token) {
+        return getRequestSpec()
+                .header("Authorization", "Bearer " + token)
+                .get("/cart");
     }
 
     @Override
-    public Response addProductToCart(int productId, int quantity, String token) {
-        String payload = "{ \"product_id\": " + productId + ", \"quantity\": " + quantity + " }";
+    public Response addProductToCart(CartRequest cartRequest, String token) {
         return getRequestSpec()
                 .header("Authorization", "Bearer " + token)
-                .body(payload)
-                .post("/cart");
-    }
-
-    @Override
-    public Response addNonExistingProductToCart(int productId, int quantity, String token) {
-        String payload = "{ \"product_id\": " + productId + ", \"quantity\": " + quantity + " }";
-        return getRequestSpec()
-                .header("Authorization", "Bearer " + token)
-                .body(payload)
+                .body(cartRequest)
                 .post("/cart");
     }
 

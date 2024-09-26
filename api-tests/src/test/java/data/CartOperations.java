@@ -1,9 +1,10 @@
 package data;
 
 import io.restassured.response.Response;
+import schema.CartRequest;
 
 public interface CartOperations {
-    Response addProductToCart(int productId, int quantity, String token);
-    Response addNonExistingProductToCart(int productId, int quantity, String token);
+    Response getClientCart(String token);
+    Response addProductToCart(CartRequest cartRequest, String token);
     Response removeProductFromCart(int productId, String token);
 }

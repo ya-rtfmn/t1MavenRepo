@@ -5,6 +5,8 @@
 ```
 VALID_USERNAME=LOGIN
 VALID_PASSWORD=PASSWORD
+INVALID_USERNAME=invalidUsername
+INVALID_PASSWORD=invalidPassword
 ```
 
 ## Для запуска тестов выполнить:

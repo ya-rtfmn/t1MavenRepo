@@ -13,4 +13,12 @@ public class EnvConfig {
     public static String getValidPassword() {
         return dotenv.get("VALID_PASSWORD");
     }
+
+    public static String getInvalidUsername() {
+        return dotenv.get("INVALID_USERNAME");
+    }
+
+    public static String getInvalidPassword() {
+        return dotenv.get("INVALID_PASSWORD");
+    }
 }

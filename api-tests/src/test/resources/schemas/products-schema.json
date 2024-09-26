@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" },
+      "category": { "type": "string" },
+      "price": { "type": "number" },
+      "discount": { "type": ["number", "null"] }
+    },
+    "required": ["id", "name", "category", "price", "discount"]
+  }
+}
