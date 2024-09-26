@@ -4,5 +4,6 @@
   "properties": {
     "message": { "type": "string" }
   },
-  "required": ["message"]
+  "required": ["message"],
+  "additionalProperties": false
 }

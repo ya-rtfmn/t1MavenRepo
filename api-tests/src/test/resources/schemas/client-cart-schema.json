@@ -19,5 +19,6 @@
     "total_price": { "type": "number" },
     "total_discount": { "type": "number" }
   },
-  "required": ["cart", "total_price", "total_discount"]
+  "required": ["cart", "total_price", "total_discount"],
+  "additionalProperties": false
 }

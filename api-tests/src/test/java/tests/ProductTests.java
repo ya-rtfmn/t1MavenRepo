@@ -17,7 +17,7 @@ public class ProductTests extends BaseTest {
         Response response = getProducts();
 
         assertEquals(200, response.getStatusCode());
-        response.then().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
     }
 
     @Test
@@ -25,7 +25,7 @@ public class ProductTests extends BaseTest {
         Response response = getProductById(EXISTING_PRODUCT_ID);
 
         assertEquals(200, response.getStatusCode());
-        response.then().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
     }
 
     @Test

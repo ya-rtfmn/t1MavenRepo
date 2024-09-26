@@ -33,7 +33,7 @@ public class CartTests extends BaseTest {
         Response response = getClientCart(token);
 
         assertEquals(200, response.getStatusCode());
-        response.then().body(matchesJsonSchemaInClasspath("schemas/client-cart-schema.json"));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/client-cart-schema.json"));
     }
 
 
@@ -45,7 +45,7 @@ public class CartTests extends BaseTest {
         Response response = addProductToCart(cartRequest, token);
 
         assertEquals(201, response.getStatusCode());
-        response.then().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class CartTests extends BaseTest {
         Response response = removeProductFromCart(EXISTING_PRODUCT_ID, token);
 
         assertEquals(200, response.getStatusCode());
-        response.then().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
     }
 
     @Test
