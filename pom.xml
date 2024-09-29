@@ -107,6 +107,14 @@
                 <configuration>
                     <reportVersion>${allure.report.version}</reportVersion>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
