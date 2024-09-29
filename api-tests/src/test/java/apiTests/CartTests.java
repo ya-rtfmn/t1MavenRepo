@@ -1,4 +1,4 @@
-package tests;
+package apiTests;
 
 import config.BaseTest;
 import config.EnvConfig;
