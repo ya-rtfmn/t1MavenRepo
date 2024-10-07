@@ -31,7 +31,9 @@ public class InputsTest {
         int randomValue = (int) (Math.random() * 10000 + 1);
         SelenideElement input = $("input[type='number']");
 
-        input.setValue(String.valueOf(randomValue));
+        input.clear();
+        input.sendKeys(String.valueOf(randomValue));
+
         System.out.println("Random value: " + randomValue);
         System.out.println("Input value: " + input.getValue());
     }
@@ -42,7 +44,8 @@ public class InputsTest {
                 "1234", "5678", "91011", "500", "0", "9999"
         ).map(value -> DynamicTest.dynamicTest("Значение: " + value, () -> {
             SelenideElement input = $("input[type='number']");
-            input.setValue(value);
+            input.clear();
+            input.sendKeys(value);
 
             input.shouldHave(Condition.value(value));
         }));
@@ -54,7 +57,8 @@ public class InputsTest {
                 " 42", "7 ", "abc", "!@#$"
         ).map(value -> DynamicTest.dynamicTest("Значение: " + value, () -> {
             SelenideElement input = $("input[type='number']");
-            input.setValue(value);
+            input.clear();
+            input.sendKeys(value);
 
             input.shouldNotHave(Condition.exactValue(value));
         }));

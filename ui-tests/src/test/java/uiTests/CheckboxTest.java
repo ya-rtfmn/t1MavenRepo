@@ -1,14 +1,14 @@
 package uiTests;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static com.codeborne.selenide.Condition.not;
-import static com.codeborne.selenide.Condition.selected;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 
@@ -33,8 +33,8 @@ public class CheckboxTest {
             checkbox2.click();
         }
 
-        System.out.println("Checkbox 1 checked: " + checkbox1.isSelected());
-        System.out.println("Checkbox 2 checked: " + checkbox2.isSelected());
+        System.out.println("Checkbox 1 checked attribute: " + checkbox1.getAttribute("checked"));
+        System.out.println("Checkbox 2 checked attribute: " + checkbox2.getAttribute("checked"));
     }
 
     @ParameterizedTest
@@ -49,6 +49,7 @@ public class CheckboxTest {
         performAction(order, checkbox1, checkbox2, description);
     }
 
+    @Step("{description}")
     private void performAction(String order, SelenideElement checkbox1, SelenideElement checkbox2, String description) {
         if (order.equals("1-2")) {
             toggleCheckbox(checkbox1, true);
@@ -59,11 +60,17 @@ public class CheckboxTest {
         }
     }
 
+    @Step("Изменение состояния чекбокса: {0}")
     private void toggleCheckbox(SelenideElement checkbox, boolean shouldBeSelected) {
-        if (checkbox.isSelected() != shouldBeSelected) {
+        if (shouldBeSelected && checkbox.getAttribute("checked") == null) {
+            checkbox.click();
+        } else if (!shouldBeSelected && checkbox.getAttribute("checked") != null) {
             checkbox.click();
         }
 
-        checkbox.shouldHave(shouldBeSelected ? selected : not(selected));
-    }
+        if (shouldBeSelected) {
+            checkbox.shouldHave(attribute("checked"));
+        } else {
+            checkbox.shouldNotHave(attribute("checked"));
+        }    }
 }

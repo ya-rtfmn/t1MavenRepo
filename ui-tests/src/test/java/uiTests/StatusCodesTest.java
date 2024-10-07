@@ -1,5 +1,6 @@
 package uiTests;
 
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,17 +20,34 @@ public class StatusCodesTest {
     }
 
     @Test
-    public void testStatusCodes() {
-        String[] codes = {"200", "301", "404", "500"};
+    public void testStatusCode200() {
+        checkStatusCode("200");
+    }
 
-        for (String code : codes) {
-            $("a[href='status_codes/" + code + "']").click();
+    @Test
+    public void testStatusCode301() {
+        checkStatusCode("301");
+    }
 
-            String bodyText = $("body").getText();
-            System.out.println("Status " + code + ": " + bodyText);
-            System.out.println("=================================");
-            back();
-        }
+    @Test
+    public void testStatusCode404() {
+        checkStatusCode("404");
+    }
+
+    @Test
+    public void testStatusCode500() {
+        checkStatusCode("500");
+    }
+
+    private void checkStatusCode(String code) {
+        $("a[href='status_codes/" + code + "']").click();
+        SelenideElement body = $("body");
+
+        String bodyText = body.getText();
+        System.out.println("Status " + code + ": " + bodyText);
+        System.out.println("=================================");
+
+        back();
     }
 
     @ParameterizedTest
