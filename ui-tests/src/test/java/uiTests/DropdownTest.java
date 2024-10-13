@@ -1,17 +1,24 @@
 package uiTests;
 
-import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.Configuration;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import pages.DropdownPage;
+import asserts.DropdownAssert;
 
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 
 public class DropdownTest {
+    static {
+        Configuration.timeout = 1000;
+    }
+
+    DropdownPage dropdownPage = new DropdownPage();
+    DropdownAssert dropdownAssert = new DropdownAssert();
 
     @BeforeEach
     public void openPage() {
@@ -21,25 +28,17 @@ public class DropdownTest {
 
     @Test
     public void testDropdown() {
-        SelenideElement dropdown = $("#dropdown");
+        dropdownPage.selectOptionByValue("1");
+        dropdownAssert.assertSelectedOptionText(dropdownPage.getSelectedOption(), "Option 1");
 
-        dropdown.selectOptionByValue("1");
-        String selectedText1 = dropdown.getSelectedOption().getText();
-        System.out.println("Selected: " + selectedText1);
-
-        dropdown.selectOptionByValue("2");
-        String selectedText2 = dropdown.getSelectedOption().getText();
-        System.out.println("Selected: " + selectedText2);
+        dropdownPage.selectOptionByValue("2");
+        dropdownAssert.assertSelectedOptionText(dropdownPage.getSelectedOption(), "Option 2");
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "1, Option 1",
-            "2, Option 2"
-    })
-    public void testDropdownState(String value, String expectedText) {
-        SelenideElement dropdown = $("#dropdown");
-        dropdown.selectOptionByValue(value);
-        dropdown.getSelectedOption().shouldHave(text(expectedText));
+    @CsvSource({"1, Option 1", "2, Option 2"})
+    public void testDropdownWithParams(String value, String expectedText) {
+        dropdownPage.selectOptionByValue(value);
+        dropdownAssert.assertSelectedOptionText(dropdownPage.getSelectedOption(), expectedText);
     }
 }
