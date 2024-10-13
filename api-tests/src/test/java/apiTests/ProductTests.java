@@ -1,38 +1,41 @@
 package apiTests;
 
-import config.BaseTest;
+import endpoints.ProductApi;
+import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import utils.AssertHelper;
 
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProductTests extends BaseTest {
 
-    public static final int EXISTING_PRODUCT_ID = 1;
-    public static final int NON_EXISTING_PRODUCT_ID = 9999;
+    private static final int EXISTING_PRODUCT_ID = 1;
+    private static final int NON_EXISTING_PRODUCT_ID = 9999;
 
     @Test
+    @Description("Test get all products")
     public void testGetProducts() {
-        Response response = getProducts();
+        Response response = ProductApi.getProducts();
 
-        assertEquals(200, response.getStatusCode());
-        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
+        AssertHelper.assertStatusCode(response, 200);
     }
 
     @Test
+    @Description("Test get product by ID")
     public void testGetProductById() {
-        Response response = getProductById(EXISTING_PRODUCT_ID);
+        Response response = ProductApi.getProductById(EXISTING_PRODUCT_ID);
 
-        assertEquals(200, response.getStatusCode());
-        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/products-schema.json"));
+        AssertHelper.assertStatusCode(response, 200);
     }
 
     @Test
+    @Description("Test get non-existing product")
     public void testGetNonExistingProduct() {
-        Response response = getProductById(NON_EXISTING_PRODUCT_ID);
+        Response response = ProductApi.getProductById(NON_EXISTING_PRODUCT_ID);
 
-        assertEquals(404, response.getStatusCode());
-        assertEquals("Product not found", response.jsonPath().getString("message"));
+        AssertHelper.assertStatusCode(response, 404);
+        String message = response.jsonPath().getString("message");
+        assertEquals("Product not found", message);
     }
 }

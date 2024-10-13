@@ -1,24 +1,25 @@
 package config;
 
-import io.github.cdimascio.dotenv.Dotenv;
+import org.aeonbits.owner.Config;
+import org.aeonbits.owner.ConfigFactory;
 
-public class EnvConfig {
+@Config.Sources({"classpath:config.properties"})
+public interface EnvConfig extends Config {
 
-    private static final Dotenv dotenv = Dotenv.load();
+    @Key("base.url")
+    String baseUrl();
 
-    public static String getValidUsername() {
-        return dotenv.get("VALID_USERNAME");
-    }
+    @Key("valid.username")
+    String getValidUsername();
 
-    public static String getValidPassword() {
-        return dotenv.get("VALID_PASSWORD");
-    }
+    @Key("valid.password")
+    String getValidPassword();
 
-    public static String getInvalidUsername() {
-        return dotenv.get("INVALID_USERNAME");
-    }
+    @Key("invalid.username")
+    String getInvalidUsername();
 
-    public static String getInvalidPassword() {
-        return dotenv.get("INVALID_PASSWORD");
-    }
+    @Key("invalid.password")
+    String getInvalidPassword();
+
+    EnvConfig cfg = ConfigFactory.create(EnvConfig.class);
 }
