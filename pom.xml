@@ -75,6 +75,11 @@
             <artifactId>allure-maven</artifactId>
             <version>${allure.maven.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.aeonbits.owner</groupId>
+            <artifactId>owner</artifactId>
+            <version>1.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>

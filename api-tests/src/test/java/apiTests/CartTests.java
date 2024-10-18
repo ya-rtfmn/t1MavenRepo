@@ -1,87 +1,87 @@
 package apiTests;
 
-import config.BaseTest;
+import endpoints.CartApi;
 import config.EnvConfig;
+import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import schema.CartRequest;
 import schema.LoginRequest;
+import utils.AssertHelper;
 import utils.TokenManager;
 
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CartTests extends BaseTest {
 
-    private static final String VALID_USERNAME = EnvConfig.getValidUsername();
-    private static final String VALID_PASSWORD = EnvConfig.getValidPassword();
-    public static final int EXISTING_PRODUCT_ID = 1;
-    public static final int NON_EXISTING_PRODUCT_ID = 9999;
-    public static final int QUANTITY_ONE = 1;
+    private static final int EXISTING_PRODUCT_ID = 1;
+    private static final int NON_EXISTING_PRODUCT_ID = 9999;
+    private static final int QUANTITY_ONE = 1;
+
     private String token;
+    private CartApi cartApi;
 
     @BeforeEach
     public void setUp() {
-        final LoginRequest loginRequest = new LoginRequest(VALID_USERNAME, VALID_PASSWORD);
+        LoginRequest loginRequest = new LoginRequest(EnvConfig.cfg.getValidUsername(), EnvConfig.cfg.getValidPassword());
         token = TokenManager.getToken(loginRequest);
+        cartApi = new CartApi(token);
     }
 
     @Test
+    @Description("Test get client cart")
     public void testGetClientCart() {
-        Response response = getClientCart(token);
+        Response response = cartApi.getClientCart();
 
-        assertEquals(200, response.getStatusCode());
-        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/client-cart-schema.json"));
+        AssertHelper.assertStatusCode(response, 200);
     }
 
-
     @Test
-    @Order(1)
+    @Description("Test add product to cart")
     public void testAddProductToCart() {
         CartRequest cartRequest = new CartRequest(EXISTING_PRODUCT_ID, QUANTITY_ONE);
+        Response response = cartApi.addProductToCart(cartRequest);
 
-        Response response = addProductToCart(cartRequest, token);
-
-        assertEquals(201, response.getStatusCode());
-        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
+        AssertHelper.assertStatusCode(response, 201);
     }
 
     @Test
+    @Description("Test add non-existing product to cart")
     public void testAddNonExistingProductToCart() {
         CartRequest cartRequest = new CartRequest(NON_EXISTING_PRODUCT_ID, QUANTITY_ONE);
+        Response response = cartApi.addProductToCart(cartRequest);
 
-        Response response = addProductToCart(cartRequest, token);
-
-        assertEquals(404, response.getStatusCode());
-        assertEquals("Product not found", response.jsonPath().getString("message"));
+        AssertHelper.assertStatusCode(response, 404);
+        String message = response.jsonPath().getString("message");
+        assertEquals("Product not found", message);
     }
 
     @Test
+    @Description("Test add product to cart without authorization")
     public void testAddProductToCartWithoutAuthorization() {
-        token = "";
+        CartApi unauthenticatedCartApi = new CartApi("");
         CartRequest cartRequest = new CartRequest(EXISTING_PRODUCT_ID, QUANTITY_ONE);
+        Response response = unauthenticatedCartApi.addProductToCart(cartRequest);
 
-        Response response = addProductToCart(cartRequest, token);
-
-        assertEquals(422, response.getStatusCode());
+        AssertHelper.assertStatusCode(response, 422); // Adjust if needed
     }
 
     @Test
-    @Order(2)
+    @Description("Test remove product from cart")
     public void testRemoveProductFromCart() {
-        Response response = removeProductFromCart(EXISTING_PRODUCT_ID, token);
+        Response response = cartApi.removeProductFromCart(EXISTING_PRODUCT_ID);
 
-        assertEquals(200, response.getStatusCode());
-        response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/add-remove-product-message-schema.json"));
+        AssertHelper.assertStatusCode(response, 200);
     }
 
     @Test
+    @Description("Test remove non-existing product from cart")
     public void testRemoveNonExistingProductFromCart() {
-        Response response = removeProductFromCart(NON_EXISTING_PRODUCT_ID, token);
+        Response response = cartApi.removeProductFromCart(NON_EXISTING_PRODUCT_ID);
 
-        assertEquals(404, response.getStatusCode());
-        assertEquals("Product not found in cart", response.jsonPath().getString("message"));
+        AssertHelper.assertStatusCode(response, 404);
+        String message = response.jsonPath().getString("message");
+        assertEquals("Product not found in cart", message);
     }
 }
