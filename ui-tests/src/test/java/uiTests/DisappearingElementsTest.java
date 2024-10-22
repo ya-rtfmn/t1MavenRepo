@@ -5,16 +5,19 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import pages.DisappearingElementsPage;
+import asserts.DisappearingElementsAssert;
 
-import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 
 public class DisappearingElementsTest {
-
     static {
         Configuration.timeout = 1000;
     }
+
+    DisappearingElementsPage disappearingElementsPage = new DisappearingElementsPage();
+    DisappearingElementsAssert disappearingElementsAssert = new DisappearingElementsAssert();
 
     @BeforeEach
     public void openPage() {
@@ -25,28 +28,19 @@ public class DisappearingElementsTest {
     @Test
     public void testDisappearingElements() {
         int attempts = 0;
-        boolean foundFiveElements = false;
-
         while (attempts < 10) {
             attempts++;
-            int elementCount = $$("ul li").size();
-            if (elementCount == 5) {
-                foundFiveElements = true;
+            disappearingElementsPage.refreshPage();
+            if (disappearingElementsPage.getElementsCount() == 5) {
                 break;
-            } else {
-                refresh();
             }
         }
-
-        if (!foundFiveElements) {
-            throw new AssertionError("5 elements not found after 10 attempts.");
-        }
+        disappearingElementsAssert.assertFiveElementsPresent();
     }
 
     @RepeatedTest(10)
-    public void testDisappearingElementsRepeated() {
-        refresh();
-
-        $$("ul li").shouldHave(size(5));
+    public void testRepeatedDisappearingElements() {
+        disappearingElementsPage.refreshPage();
+        disappearingElementsAssert.assertFiveElementsPresent();
     }
 }

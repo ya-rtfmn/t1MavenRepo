@@ -43,3 +43,4 @@ build/
 
 ### ENV ###
 api-tests/.env
+config.properties
